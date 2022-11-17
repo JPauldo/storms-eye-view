@@ -21,8 +21,8 @@
     <aside class="show-container col-3">
       <form class="ms-auto col">
         <h2 class="text-center">Search Here</h2>
-        <input type="text" class="form-control my-2" placeholder="Search">
-        <button class="btn btn-outline-primary my-2 my-sm-0">Button</button>
+        <input type="text" id="search-input" class="form-control my-2" placeholder="Search">
+        <button id="search-button" class="btn btn-outline-primary my-2 my-sm-0">Button</button>
       </form>
       <hr>
       <ul>
@@ -32,13 +32,16 @@
         <li>Names of Cities</li>
       </ul>
     </aside>
+    <!-- Section for Forecast Data -->
     <section class="show-container col-9">
       
       <article class="show-container">
         <h2>City Name</h2>
-        <p>Temp: <span></span></p>
-        <p>Wind: <span></span></p>
-        <p>Humidity: <span></span></p>
+        <p>Response-1: <span id="response-status-1"></span></p>
+        <p>Response-2: <span id="response-status-2"></span></p>
+        <p>Temp: <span id=""></span></p>
+        <p>Wind: <span id=""></span></p>
+        <p>Humidity: <span id=""></span></p>
       </article>
       <section class="show-container">
         <h3>Forecast Below</h3>

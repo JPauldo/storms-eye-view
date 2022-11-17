@@ -1,11 +1,29 @@
 /* General Layout
    ========================================================================== */
 
+ /*  */
 body {
   background: #F0F8FF;
   color: #000814;
+  font-family: Arial, sans-serif;
 }
+
+header {
+  background: linear-gradient(45deg, #001D3D, #003566);
+  color: #F0F8FF;
+  text-shadow: 1px 1px 2px #0077B6, 0 0 1em #00B4D8, 0 0 0.2em #03045E;
+}
+
+/* Class
+   ========================================================================== */
 /*  */
 .show-container {
   border: 2px dashed #00B4D8;
+}
+
+/* IDs
+   ========================================================================== */
+
+#id {
+  /*  */
 }
