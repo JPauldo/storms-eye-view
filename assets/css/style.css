@@ -1,0 +1,11 @@
+/* General Layout
+   ========================================================================== */
+
+body {
+  background: #F0F8FF;
+  color: #000814;
+}
+/*  */
+.show-container {
+  border: 2px dashed #00B4D8;
+}
