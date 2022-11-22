@@ -13,7 +13,7 @@ var lon;
 // 
 function getForecastData(data) {
   lat = data.coord.lat;
-  lon = data.coord.lat;
+  lon = data.coord.lon;
   
   var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
 
