@@ -6,11 +6,70 @@ var forecastList = document.querySelector('#forecast-week');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
+var cities;
 var cityName;
 var lat;
 var lon;
 
-// Displays the forecast data for next five days
+// Sets the cities based on past searches in local storage
+function setCities() {
+  cities = JSON.parse(localStorage.getItem('cities'));
+  
+  // If there was nothing in local storage, creates an empty array
+  if (cities === null) {
+    cities = [];
+  }
+}
+
+// Puts the data necessary for the city's API call into local storage
+function storeCityData() {
+  var cityData = {
+    name: cityName,
+    latitude: lat,
+    longitude: lon
+  }
+  console.log(cityData);
+  console.log(cities);
+
+  // Checks to see if the city's data is already in local storage
+  if (!cities.some(el => el.name === cityName)) {
+    cities.push(cityData);
+
+    localStorage.setItem('cities', JSON.stringify(cities));
+  }
+}
+
+// Sets the current day's forecast data on display
+function currentForecast(forecastData) {
+  console.log('Sixth', forecastData);
+  var temp = forecastData.temp;
+  var wind = forecastData.wind;
+  var humid = forecastData.humidity;
+  var date = forecastData.date;
+  var icon = forecastData.icon;
+
+  // Creating current day forecast display elements
+  var cityTitle = document.createElement('h2');
+  var img = document.createElement('img');
+  var tempEl = document.createElement('p');
+  var windEl = document.createElement('p');
+  var humidEl = document.createElement('p');
+
+  cityTitle.textContent = cityName + ' (' + date + ')';
+  img.setAttribute('src', 'http://openweathermap.org/img/wn/' + icon + '.png');
+  tempEl.textContent = 'Temperature: ' + temp + '°F';
+  windEl.textContent = 'Wind: ' + wind + ' MPH';
+  humidEl.textContent = 'Humidity: ' + humid + '%';
+
+  // Append the new elements to the display
+  cityTitle.appendChild(img);
+  currentDayForecast.appendChild(cityTitle);
+  currentDayForecast.appendChild(tempEl);
+  currentDayForecast.appendChild(windEl);
+  currentDayForecast.appendChild(humidEl);
+}
+
+// Displays the five day forecast
 function weekForecast(forecastData) {
   forecastList.innerHTML = '';
   
@@ -48,8 +107,8 @@ function weekForecast(forecastData) {
   }
 }
 
-// Retrieves forecast data for the next five days
-function getForecastData() {
+// Retrieves the given city's forecast data for the next five days
+function getFiveDayForecast() {
   var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
 
   // Calls the 5-day forecast API
@@ -67,37 +126,7 @@ function getForecastData() {
     });
 }
 
-// Sets the current day's forecast data on display
-function currentForecast(forecastData) {
-  console.log('Sixth', forecastData);
-  var temp = forecastData.temp;
-  var wind = forecastData.wind;
-  var humid = forecastData.humidity;
-  var date = forecastData.date;
-  var icon = forecastData.icon;
-
-  // Creating current day forecast display elements
-  var cityTitle = document.createElement('h2');
-  var img = document.createElement('img');
-  var tempEl = document.createElement('p');
-  var windEl = document.createElement('p');
-  var humidEl = document.createElement('p');
-
-  cityTitle.textContent = cityName + ' (' + date + ')';
-  img.setAttribute('src', 'http://openweathermap.org/img/wn/' + icon + '.png');
-  tempEl.textContent = 'Temperature: ' + temp + '°F';
-  windEl.textContent = 'Wind: ' + wind + ' MPH';
-  humidEl.textContent = 'Humidity: ' + humid + '%';
-
-  // Append the new elements to the display
-  cityTitle.appendChild(img);
-  currentDayForecast.appendChild(cityTitle);
-  currentDayForecast.appendChild(tempEl);
-  currentDayForecast.appendChild(windEl);
-  currentDayForecast.appendChild(humidEl);
-}
-
-// Retrieves current day weather data for the provided city
+// Retrieves the given city's weather for current day
 function getCityData(event) {
   event.preventDefault();
 
@@ -133,10 +162,14 @@ function getCityData(event) {
         
         currentForecast(forecast);
         
-        getForecastData();
+        storeCityData();
+        getFiveDayForecast();
       });
   }
 }
+
+// Initial Function Calls
+setCities();
 
 // Event Listeners
 searchBtn.addEventListener('click', getCityData);
