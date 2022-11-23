@@ -138,7 +138,7 @@ function displayWeekForecast(forecastData) {
 
 // Retrieves the given city's forecast data for the next five days
 function getFiveDayForecast() {
-  var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
+  var forecastURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
 
   // Calls the 5-day forecast API
   fetch(forecastURL)
@@ -169,7 +169,7 @@ function getCityWeather(event) {
     cityName = searchInput.value;
   }
     
-  var cityURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
+  var cityURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
 
   // Calls current day weather API
   fetch(cityURL)
