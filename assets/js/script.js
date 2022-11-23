@@ -1,9 +1,11 @@
+'use strict'
+
 // Captured Elements
 var searchBtn = document.querySelector('#search-button');
 var searchInput = document.querySelector('#search-input');
-var currentDayForecast = document.querySelector('#forecast-day');
-var forecastList = document.querySelector('#forecast-week');
-var cityList = document.querySelector('#city-list');
+var cityList = document.querySelector('#search-history');
+var weatherDisplay = document.querySelector('#weather-display');
+var forecastDisplay = document.querySelector('#forecast-display');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
@@ -29,8 +31,6 @@ function storeCityData() {
     latitude: lat,
     longitude: lon
   }
-  console.log(cityData);
-  console.log(cities);
 
   // Checks to see if the city's data is already in local storage
   if (!cities.some(el => el.name === cityName)) {
@@ -65,9 +65,8 @@ function displaySearchHistory() {
 
 // Sets the current day's weather data on display
 function displayCurrentForecast(weatherData) {
-  currentDayForecast.innerHTML = '';
+  weatherDisplay.innerHTML = '';
   
-  console.log('Sixth', weatherData);
   var temp = weatherData.temp;
   var wind = weatherData.wind;
   var humid = weatherData.humidity;
@@ -89,15 +88,17 @@ function displayCurrentForecast(weatherData) {
 
   // Appends the new elements to the display
   cityTitle.appendChild(img);
-  currentDayForecast.appendChild(cityTitle);
-  currentDayForecast.appendChild(tempEl);
-  currentDayForecast.appendChild(windEl);
-  currentDayForecast.appendChild(humidEl);
+  weatherDisplay.appendChild(cityTitle);
+  weatherDisplay.appendChild(tempEl);
+  weatherDisplay.appendChild(windEl);
+  weatherDisplay.appendChild(humidEl);
+
+  weatherDisplay.style.display = 'block';
 }
 
 // Displays the five day forecast
 function displayWeekForecast(forecastData) {
-  forecastList.innerHTML = '';
+  forecastDisplay.innerHTML = '';
   
   // Sets the weather data for every day
   // Note: Each day is broken up into three hours intervals
@@ -105,7 +106,7 @@ function displayWeekForecast(forecastData) {
     var temp = forecastData[i].main.temp;
     var wind = forecastData[i].wind.speed;
     var humid = forecastData[i].main.humidity;
-    var date = dayjs.unix(forecastData[i].dt).format('dddd, MMM DD');
+    var date = dayjs.unix(forecastData[i].dt).format('ddd, MMM DD');
     var icon = forecastData[i].weather[0].icon;
 
     // Creating element for the day's data
@@ -129,7 +130,7 @@ function displayWeekForecast(forecastData) {
     li.appendChild(pTemp);
     li.appendChild(pWind);
     li.appendChild(pHumid);
-    forecastList.appendChild(li);
+    forecastDisplay.appendChild(li);
   }
 }
 
@@ -140,7 +141,6 @@ function getFiveDayForecast() {
   // Calls the 5-day forecast API
   fetch(forecastURL)
     .then(function (response) {
-      console.log(response);
       // Checks to see if the response is valid
       if(response.status === 200) {
         return response.json();
@@ -151,8 +151,6 @@ function getFiveDayForecast() {
       }
     })
     .then(function (data) {
-      console.log(data);
-      
       displayWeekForecast(data.list);
       cityName = '';
     });
@@ -162,7 +160,7 @@ function getFiveDayForecast() {
 function getCityWeather(event) {
   var forecast = {};
 
-  // 
+  // Checks if the city name has been set already and if the search bar is empty
   if (cityName === '' && searchInput.value !== '') {
     event.preventDefault();
 
@@ -184,8 +182,6 @@ function getCityWeather(event) {
       }
     })
     .then(function (data) {
-      console.log(data);
-      
       forecast['date'] = dayjs.unix(data.dt).format('dddd, MMM DD');
       forecast['icon'] = data.weather[0].icon;
       forecast['temp'] = data.main.temp;

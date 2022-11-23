@@ -10,36 +10,43 @@
 </head>
 <body>
   <!-- Header for Site -->
-  <header class="show-container">
-    <h1 class="text-center">Weather Header</h1>
+  <header class="py-2">
+    <h1 class="text-center">Storm's Eye View</h1>
   </header>
 
   <!-- Main Content for Weather -->
-  <main class="show-container container-fluid row">
+  <main class="adjust-container container-fluid row">
     <!-- Aside for Search and its History -->
-    <aside class="show-container col-3">
+    <aside class="col-3">
       <form class="ms-auto col">
-        <h2 class="text-center">Search Here</h2>
-        <input type="text" id="search-input" class="form-control my-2" placeholder="Search">
-        <button id="search-button" class="btn btn-outline-primary my-2 my-sm-0">Button</button>
+        <h2 class="text-center">Search by City Name</h2>
+        <input
+          type="text"
+          id="search-input"
+          class="form-control my-2"
+          placeholder="Search">
+        <button
+          id="search-button"
+          class="btn btn-outline-primary my-2 my-sm-0">
+          Search
+        </button>
       </form>
       <hr>
-      <section id="city-list">
-      </section>
+      <section
+        class="my-2"
+        id="search-history"></section>
     </aside>
     <!-- Section for Forecast Data -->
-    <section class="show-container col-9">
-      
-      <article class="show-container" id="forecast-day">
-      </article>
-      <section class="show-container">
-        <h3>Forecast Below</h3>
-        <section class="show-container row" id="forecast-week">
-        </section>
-      </section>
+    <section class="col-9">
+      <article
+        class="px-2 mb-5"
+        id="weather-display"></article>
+      <section
+        class="row" 
+        id="forecast-display"></section>
     </section>
   </main>
-  <footer class="show-container"></footer>
+  <!-- <footer class="show-container"></footer> -->
 
   <!-- Links for JavaScript -->
   <script
