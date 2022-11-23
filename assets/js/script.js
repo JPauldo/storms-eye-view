@@ -3,6 +3,7 @@ var searchBtn = document.querySelector('#search-button');
 var searchInput = document.querySelector('#search-input');
 var currentDayForecast = document.querySelector('#forecast-day');
 var forecastList = document.querySelector('#forecast-week');
+var cityList = document.querySelector('#city-list');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
@@ -39,6 +40,29 @@ function storeCityData() {
   }
 }
 
+// Shows past cities searched
+function displaySearchHistory() {
+  cityList.innerHTML = '';
+
+  // If they exist, iterates on the past searched cities
+  if (cities) {
+    cities.forEach(cityInfo => {
+      var li = document.createElement('li');
+      
+      li.setAttribute('class', 'btn btn-secondary my-2');
+      li.setAttribute('style', 'width: 100%;')
+      li.setAttribute('data-name', cityInfo.name);
+      li.setAttribute('data-latitude', cityInfo.latitude);
+      li.setAttribute('data-longitude', cityInfo.longitude);
+
+      li.textContent = cityInfo.name;
+
+      // Appends the list item to the display
+      cityList.appendChild(li);
+    });
+  }
+}
+
 // Sets the current day's forecast data on display
 function currentForecast(forecastData) {
   console.log('Sixth', forecastData);
@@ -61,7 +85,7 @@ function currentForecast(forecastData) {
   windEl.textContent = 'Wind: ' + wind + ' MPH';
   humidEl.textContent = 'Humidity: ' + humid + '%';
 
-  // Append the new elements to the display
+  // Appends the new elements to the display
   cityTitle.appendChild(img);
   currentDayForecast.appendChild(cityTitle);
   currentDayForecast.appendChild(tempEl);
@@ -97,7 +121,7 @@ function weekForecast(forecastData) {
     pWind.textContent = 'Wind: ' + wind + ' MPH';
     pHumid.textContent = 'Humidity: ' + humid + '%';
 
-    // Appending the new elements for display
+    // Appends the new elements for display
     li.appendChild(h4);
     li.appendChild(img);
     li.appendChild(pTemp);
@@ -170,6 +194,7 @@ function getCityData(event) {
 
 // Initial Function Calls
 setCities();
+displaySearchHistory();
 
 // Event Listeners
 searchBtn.addEventListener('click', getCityData);
