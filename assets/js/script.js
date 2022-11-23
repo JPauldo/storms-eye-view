@@ -7,10 +7,10 @@ var cityList = document.querySelector('#city-list');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
-var cities;
 var cityName;
 var lat;
 var lon;
+var cities;
 
 // Sets the cities based on past searches in local storage
 function setCities() {
@@ -63,14 +63,16 @@ function displaySearchHistory() {
   }
 }
 
-// Sets the current day's forecast data on display
-function currentForecast(forecastData) {
-  console.log('Sixth', forecastData);
-  var temp = forecastData.temp;
-  var wind = forecastData.wind;
-  var humid = forecastData.humidity;
-  var date = forecastData.date;
-  var icon = forecastData.icon;
+// Sets the current day's weather data on display
+function displayCurrentForecast(weatherData) {
+  currentDayForecast.innerHTML = '';
+  
+  console.log('Sixth', weatherData);
+  var temp = weatherData.temp;
+  var wind = weatherData.wind;
+  var humid = weatherData.humidity;
+  var date = weatherData.date;
+  var icon = weatherData.icon;
 
   // Creating current day forecast display elements
   var cityTitle = document.createElement('h2');
@@ -94,7 +96,7 @@ function currentForecast(forecastData) {
 }
 
 // Displays the five day forecast
-function weekForecast(forecastData) {
+function displayWeekForecast(forecastData) {
   forecastList.innerHTML = '';
   
   // Sets the weather data for every day
@@ -139,57 +141,74 @@ function getFiveDayForecast() {
   fetch(forecastURL)
     .then(function (response) {
       console.log(response);
-
-      return response.json();
+      // Checks to see if the response is valid
+      if(response.status === 200) {
+        return response.json();
+      }
+      else {
+        alert('Something is wrong with the data provided. Got a response of ' + response.status + '. Please try again.');
+        cityName = '';
+      }
     })
     .then(function (data) {
       console.log(data);
       
-      weekForecast(data.list);
+      displayWeekForecast(data.list);
       cityName = '';
     });
 }
 
 // Retrieves the given city's weather for current day
-function getCityData(event) {
-  event.preventDefault();
-
+function getCityWeather(event) {
   var forecast = {};
 
-  // Checks to see if the search bar is empty
-  if (searchInput.value === '') {
-    window.alert("Please enter a city!")
-  } 
-  else {
+  // 
+  if (cityName === '' && searchInput.value !== '') {
+    event.preventDefault();
+
     cityName = searchInput.value;
-    
-    var cityURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
-
-    // Calls current day weather API
-    fetch(cityURL)
-      .then(function (response) {
-        console.log(response);
-        
-        return response.json();
-      })
-      .then(function (data) {
-        console.log(data);
-        
-        forecast['date'] = dayjs.unix(data.dt).format('dddd, MMM DD');
-        forecast['icon'] = data.weather[0].icon;
-        forecast['temp'] = data.main.temp;
-        forecast['wind'] = data.wind.speed;
-        forecast['humidity'] = data.main.humidity;
-
-        lat = data.coord.lat;
-        lon = data.coord.lon;
-        
-        currentForecast(forecast);
-        
-        storeCityData();
-        getFiveDayForecast();
-      });
   }
+    
+  var cityURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
+
+  // Calls current day weather API
+  fetch(cityURL)
+    .then(function (response) {
+      // Checks to see if the response is valid
+      if(response.status === 200) {
+        return response.json();
+      }
+      else {
+        alert('Please enter a valid cityName');
+        cityName = '';
+      }
+    })
+    .then(function (data) {
+      console.log(data);
+      
+      forecast['date'] = dayjs.unix(data.dt).format('dddd, MMM DD');
+      forecast['icon'] = data.weather[0].icon;
+      forecast['temp'] = data.main.temp;
+      forecast['wind'] = data.wind.speed;
+      forecast['humidity'] = data.main.humidity;
+
+      lat = data.coord.lat;
+      lon = data.coord.lon;
+      
+      displayCurrentForecast(forecast);
+      
+      storeCityData();
+      getFiveDayForecast();
+    });
+}
+
+// Restrieves the city data stored in the buttons data attributes
+function getCityData(event) {
+  cityName = event.target.dataset.name;
+  lat = event.target.dataset.latitude;
+  lon = event.target.dataset.longitude;
+
+  getCityWeather(event);
 }
 
 // Initial Function Calls
@@ -197,4 +216,5 @@ setCities();
 displaySearchHistory();
 
 // Event Listeners
-searchBtn.addEventListener('click', getCityData);
+searchBtn.addEventListener('click', getCityWeather);
+cityList.addEventListener('click', getCityData);
