@@ -9,7 +9,7 @@ var forecastDisplay = document.querySelector('#forecast-display');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
-var cityName;
+var cityName = '';
 var lat;
 var lon;
 var cities;
@@ -37,6 +37,8 @@ function storeCityData() {
     cities.push(cityData);
 
     localStorage.setItem('cities', JSON.stringify(cities));
+
+    displaySearchHistory()
   }
 }
 
