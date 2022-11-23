@@ -2,6 +2,7 @@
 var searchBtn = document.querySelector('#search-button');
 var searchInput = document.querySelector('#search-input');
 var currentDayForecast = document.querySelector('#forecast-day');
+var forecastList = document.querySelector('#forecast-week');
 
 // Global Variables
 var APIKey = '2a4a21cadfdf5f9c20683500f0de1557';
@@ -9,24 +10,60 @@ var cityName;
 var lat;
 var lon;
 
-// 
-function getForecastData(data) {
-  lat = data.coord.lat;
-  lon = data.coord.lon;
+// Displays the forecast data for next five days
+function weekForecast(forecastData) {
+  forecastList.innerHTML = '';
   
+  // Sets the weather data for every day
+  // Note: Each day is broken up into three hours intervals
+  for (var i = 7; i < forecastData.length; i += 8) {
+    var temp = forecastData[i].main.temp;
+    var wind = forecastData[i].wind.speed;
+    var humid = forecastData[i].main.humidity;
+    var date = dayjs.unix(forecastData[i].dt).format('dddd, MMM DD');
+    var icon = forecastData[i].weather[0].icon;
+
+    // Creating element for the day's data
+    var li = document.createElement('li');
+    var h4 = document.createElement('h5');
+    var img = document.createElement('img');
+    var pTemp = document.createElement('p');
+    var pWind = document.createElement('p');
+    var pHumid = document.createElement('p');
+
+    li.setAttribute('class', 'col pt-2 mx-1 rounded');
+    h4.textContent = cityName + ' (' + date + ')';
+    img.setAttribute('src', 'http://openweathermap.org/img/wn/' + icon + '.png');
+    pTemp.textContent = 'Temp: ' + temp + '°F';
+    pWind.textContent = 'Wind: ' + wind + ' MPH';
+    pHumid.textContent = 'Humidity: ' + humid + '%';
+
+    // Appending the new elements for display
+    li.appendChild(h4);
+    li.appendChild(img);
+    li.appendChild(pTemp);
+    li.appendChild(pWind);
+    li.appendChild(pHumid);
+    forecastList.appendChild(li);
+  }
+}
+
+// Retrieves forecast data for the next five days
+function getForecastData() {
   var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
 
-  // 
+  // Calls the 5-day forecast API
   fetch(forecastURL)
     .then(function (response) {
       console.log(response);
-      if (response.status === 200) {
-        response2Text.textContent = response.status;
-      }
+
       return response.json();
     })
     .then(function (data) {
       console.log(data);
+      
+      weekForecast(data.list);
+      cityName = '';
     });
 }
 
@@ -51,10 +88,9 @@ function currentForecast(forecastData) {
   tempEl.textContent = 'Temperature: ' + temp + '°F';
   windEl.textContent = 'Wind: ' + wind + ' MPH';
   humidEl.textContent = 'Humidity: ' + humid + '%';
-  
-  cityTitle.appendChild(img);
 
   // Append the new elements to the display
+  cityTitle.appendChild(img);
   currentDayForecast.appendChild(cityTitle);
   currentDayForecast.appendChild(tempEl);
   currentDayForecast.appendChild(windEl);
@@ -76,7 +112,7 @@ function getCityData(event) {
     
     var cityURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
 
-    // Fetches the city's current day weather data
+    // Calls current day weather API
     fetch(cityURL)
       .then(function (response) {
         console.log(response);
@@ -96,6 +132,8 @@ function getCityData(event) {
         lon = data.coord.lon;
         
         currentForecast(forecast);
+        
+        getForecastData();
       });
   }
 }
