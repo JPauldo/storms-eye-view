@@ -6,7 +6,7 @@ Storm's Eye View is a weather forecasting site that finds what the weather in an
 
 This application gave provided an opportunity to familiarize with using APIs and how to store and access the data to hit its end points. It was also my first time utilizing Bootstrap, a CSS framework. It was quite the useful tool for get my front-end formatted. I look forward to the next opportunity to play with both.
 
-Maybe you two would like to [check out](https://jpauldo.github.io/storms-eye-view/) the whether in city near you. 
+Maybe you should [check out](https://jpauldo.github.io/storms-eye-view/) the weather in city near you. 
 
 ## Usage
 
